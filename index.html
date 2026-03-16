@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cinema United — Communications Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cinema-black: #000000;
+    --cinema-red: #9B001A;
+    --cinema-red-light: #b8132e;
+    --cinema-red-glow: rgba(155, 0, 26, 0.08);
+    --cinema-grey: #58595B;
+    --cinema-grey-light: #8a8b8d;
+    --cinema-grey-pale: #e8e8e9;
+    --bg-primary: #f7f7f8;
+    --bg-card: #ffffff;
+    --bg-card-inner: #f2f2f4;
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    --border-accent: rgba(155, 0, 26, 0.2);
+    --text-primary: #1a1a1a;
+    --text-secondary: #555555;
+    --text-tertiary: #888888;
+    --text-muted: #bbbbbb;
+    --positive: #1a8a4a;
+    --positive-bg: rgba(26, 138, 74, 0.08);
+    --negative: #c0392b;
+    --negative-bg: rgba(192, 57, 43, 0.08);
+    --neutral: #c27a00;
+    --neutral-bg: rgba(194, 122, 0, 0.08);
+    --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-card-hover: 0 4px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --font-display: 'Barlow Condensed', sans-serif;
+    --font-accent: 'Playfair Display', serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .dashboard {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 24px 32px 48px;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border-subtle);
+    position: relative;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 200px;
+    height: 2px;
+    background: var(--cinema-red);
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .header-logo {
+    width: 44px;
+    height: 44px;
+    background: var(--cinema-red);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .header-logo::before {
+    content: 'CU';
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: white;
+  }
+  .header-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 28px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--cinema-black);
+    line-height: 1;
+  }
+  .header-subtitle {
+    font-family: var(--font-accent);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--cinema-red);
+    margin-top: 2px;
+  }
+  .header-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .header-period {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--cinema-grey);
+  }
+  .header-updated {
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  /* VIEW TOGGLE */
+  .view-toggle {
+    display: flex;
+    gap: 2px;
+    background: var(--bg-card-inner);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+    border: 1px solid var(--border-subtle);
+  }
+  .view-toggle button {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 6px 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+  .view-toggle button.active {
+    background: var(--cinema-red);
+    color: white;
+  }
+  .view-toggle button:hover:not(.active) {
+    color: var(--text-secondary);
+    background: rgba(0,0,0,0.03);
+  }
+
+  /* HERO STRIP */
+  .hero-strip {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .hero-stat {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 18px 16px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow-card);
+  }
+  .hero-stat:hover {
+    border-color: var(--border-accent);
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-1px);
+  }
+  .hero-stat::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--cinema-red);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .hero-stat:hover::before { opacity: 1; }
+  .hero-stat-label {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .platform-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .dot-linkedin { background: #0077B5; }
+  .dot-instagram { background: #E4405F; }
+  .dot-twitter { background: #555; }
+  .dot-email { background: #c27a00; }
+  .dot-web { background: #1a8a4a; }
+  .dot-total { background: var(--cinema-red); }
+  .hero-stat-value {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 28px;
+    color: var(--cinema-black);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .hero-stat-change {
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .change-positive { color: var(--positive); }
+  .change-negative { color: var(--negative); }
+  .change-neutral { color: var(--neutral); }
+
+  /* SECTION HEADERS */
+  .section { margin-bottom: 28px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .section-header h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--cinema-black);
+  }
+  .section-header .accent-word {
+    font-family: var(--font-accent);
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--cinema-red);
+    font-size: 17px;
+  }
+  .section-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-subtle);
+  }
+
+  /* PLATFORM CARDS */
+  .social-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .platform-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transition: all 0.25s ease;
+  }
+  .platform-card:hover {
+    border-color: var(--border-accent);
+    box-shadow: var(--shadow-card-hover);
+  }
+  .platform-card-header {
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-card-inner);
+  }
+  .platform-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--cinema-black);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .platform-card-body { padding: 16px 18px; }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .stat-value {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--cinema-black);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .stat-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: var(--font-display);
+  }
+  .badge-up { background: var(--positive-bg); color: var(--positive); }
+  .badge-down { background: var(--negative-bg); color: var(--negative); }
+  .badge-neutral { background: var(--neutral-bg); color: var(--neutral); }
+
+  /* TOP POST WITH IMAGE */
+  .top-post {
+    margin-top: 12px;
+    background: var(--bg-card-inner);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .top-post-inner {
+    display: flex;
+  }
+  .top-post-image {
+    width: 90px;
+    min-height: 90px;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--cinema-grey-pale);
+    position: relative;
+  }
+  .top-post-image.placeholder::after {
+    content: '📷';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    opacity: 0.35;
+  }
+  .top-post-content {
+    flex: 1;
+    padding: 10px 12px;
+    min-width: 0;
+  }
+  .top-post-label {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--cinema-red);
+    margin-bottom: 4px;
+  }
+  .top-post-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .top-post-meta {
+    margin-top: 6px;
+    display: flex;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  /* TOP 3 LIST WITH THUMBNAILS */
+  .top-posts-section {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-subtle);
+  }
+  .top-posts-header {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--cinema-red);
+    margin-bottom: 8px;
+  }
+  .mini-post {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mini-post:last-child { border-bottom: none; }
+  .mini-post-rank {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 12px;
+    color: var(--text-muted);
+    width: 16px;
+    flex-shrink: 0;
+  }
+  .mini-post-thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--cinema-grey-pale);
+    flex-shrink: 0;
+  }
+  .mini-post-text {
+    flex: 1;
+    font-size: 11px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mini-post-engagement {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--cinema-black);
+    flex-shrink: 0;
+  }
+
+  /* BOTTOM GRID */
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transition: all 0.25s ease;
+  }
+  .card:hover { border-color: var(--border-accent); }
+  .card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-card-inner);
+  }
+  .card-header h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--cinema-black);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-body { padding: 16px 18px; }
+  .email-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .email-stat {
+    text-align: center;
+    padding: 10px 4px;
+    background: var(--bg-card-inner);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
+  }
+  .email-stat-value {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--cinema-black);
+    line-height: 1;
+  }
+  .email-stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+    font-family: var(--font-display);
+    font-weight: 500;
+  }
+  .newsletter-list { list-style: none; }
+  .newsletter-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .newsletter-item:last-child { border-bottom: none; }
+  .newsletter-rank {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--text-muted);
+    width: 20px;
+    text-align: center;
+  }
+  .newsletter-info { flex: 1; min-width: 0; }
+  .newsletter-subject {
+    font-size: 12px;
+    color: var(--text-primary);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .newsletter-date { font-size: 11px; color: var(--text-tertiary); }
+  .newsletter-rate {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--positive);
+  }
+  .website-hero-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .website-hero-stat {
+    padding: 14px 12px;
+    background: var(--bg-card-inner);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
+    text-align: center;
+  }
+  .website-hero-stat .stat-big {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 26px;
+    color: var(--cinema-black);
+    line-height: 1;
+  }
+  .website-hero-stat .stat-small-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+    font-family: var(--font-display);
+    font-weight: 500;
+  }
+  .top-pages-label {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+  }
+  .page-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .page-item:last-child { border-bottom: none; }
+  .page-rank {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--text-muted);
+    width: 20px;
+    text-align: center;
+  }
+  .page-url {
+    flex: 1;
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .page-views {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--cinema-black);
+  }
+
+  /* COUNTDOWN */
+  .countdown-strip {
+    background: var(--cinema-black);
+    border-radius: var(--radius-md);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+  .countdown-strip::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 3px;
+    background: var(--cinema-red);
+  }
+  .countdown-strip::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 85% 50%, rgba(155, 0, 26, 0.2), transparent 70%);
+    pointer-events: none;
+  }
+  .countdown-info {
+    z-index: 1;
+  }
+  .countdown-event {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: white;
+  }
+  .countdown-dates {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+  }
+  .countdown-timer {
+    display: flex;
+    gap: 20px;
+    z-index: 1;
+  }
+  .countdown-unit { text-align: center; }
+  .countdown-number {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 32px;
+    color: var(--cinema-red-light);
+    line-height: 1;
+  }
+  .countdown-label {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 2px;
+  }
+
+  /* WEEKLY STRIP */
+  .weekly-strip { margin-bottom: 28px; }
+  .weekly-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+  .weekly-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.25s ease;
+  }
+  .weekly-card:hover { border-color: var(--border-accent); }
+  .weekly-card-platform {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .weekly-card-image {
+    width: 100%;
+    height: 64px;
+    border-radius: 4px;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--cinema-grey-pale);
+    margin-bottom: 8px;
+  }
+  .weekly-card-text {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .weekly-card-stat {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--cinema-black);
+  }
+
+  /* FOOTER */
+  .dashboard-footer {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .footer-note {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 10px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 1200px) {
+    .hero-strip { grid-template-columns: repeat(3, 1fr); }
+    .social-grid { grid-template-columns: repeat(2, 1fr); }
+    .weekly-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .dashboard { padding: 16px; }
+    .header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .header-meta { align-items: flex-start; }
+    .hero-strip { grid-template-columns: repeat(2, 1fr); }
+    .social-grid { grid-template-columns: 1fr; }
+    .bottom-grid { grid-template-columns: 1fr; }
+    .weekly-grid { grid-template-columns: repeat(2, 1fr); }
+    .countdown-strip { flex-direction: column; gap: 16px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+<div class="dashboard">
+
+  <!-- ====== HEADER ====== -->
+  <header class="header">
+    <div class="header-brand">
+      <div class="header-logo"></div>
+      <div>
+        <div class="header-title">Communications Dashboard</div>
+        <div class="header-subtitle">Digital Performance at a Glance</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="view-toggle">
+        <button class="active" onclick="setView('monthly')">Monthly</button>
+        <button onclick="setView('weekly')">Weekly</button>
+      </div>
+      <!-- ✏️ EDIT: Reporting period and last-updated date -->
+      <div class="header-period" id="periodLabel">February 2026</div>
+      <div class="header-updated">Updated Mar 16, 2026</div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       ✏️ HERO STRIP — Top-line numbers
+       Change the values inside .hero-stat-value and .hero-stat-change
+       For negative trends: change class to "change-negative" and arrow to &#9660;
+       ============================================================ -->
+  <div class="hero-strip">
+    <div class="hero-stat">
+      <div class="hero-stat-label"><span class="platform-dot dot-total"></span> Total Social Followers</div>
+      <div class="hero-stat-value">7,051</div>
+      <div class="hero-stat-change change-positive">&#9650; 4.4% from last month</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-label"><span class="platform-dot dot-linkedin"></span> LinkedIn Followers</div>
+      <div class="hero-stat-value">4,461</div>
+      <div class="hero-stat-change change-positive">&#9650; 4.2% &middot; +188 new</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-label"><span class="platform-dot dot-instagram"></span> Instagram Followers</div>
+      <div class="hero-stat-value">619</div>
+      <div class="hero-stat-change change-positive">&#9650; 17.7% &middot; +78 new</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-label"><span class="platform-dot dot-twitter"></span> X / Twitter Followers</div>
+      <div class="hero-stat-value">1,765</div>
+      <div class="hero-stat-change change-neutral">&#9654; 0.9% &middot; +15 new</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-label"><span class="platform-dot dot-web"></span> Website Visitors</div>
+      <div class="hero-stat-value">7,500</div>
+      <div class="hero-stat-change change-positive">&#9650; 673.2% from last month</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-label"><span class="platform-dot dot-email"></span> Email Avg Open Rate</div>
+      <div class="hero-stat-value">31.3%</div>
+      <div class="hero-stat-change change-positive">&#9650; -2.1pts from last month</div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ✏️ WEEKLY HIGHLIGHTS — shown only when "Weekly" toggle is active
+       For images: put the image file in the same folder and set
+       style="background-image: url('screenshot-linkedin.png');"
+       ============================================================ -->
+  <div class="weekly-strip" id="weeklyStrip" style="display: none;">
+    <div class="section-header">
+      <h2>This Week's <span class="accent-word">Highlights</span></h2>
+    </div>
+    <div class="weekly-grid">
+      <div class="weekly-card">
+        <div class="weekly-card-platform"><span class="platform-dot dot-linkedin"></span> LinkedIn</div>
+        <div class="weekly-card-image" style="background-image: url('https://variety.com/wp-content/uploads/2026/03/GMZ_KV-Announcement-3-9-26-e1773080181996.png');"></div>
+        <div class="weekly-card-text">CinemaCon welcomes Academy Award Winning Filmmaker Takashi Yamazaki to the Main Stage.</div>
+        <div class="weekly-card-stat">2,745 impressions</div>
+      </div>
+      <div class="weekly-card">
+        <div class="weekly-card-platform"><span class="platform-dot dot-instagram"></span> Instagram</div>
+        <div class="weekly-card-image" style="background-image: url('https://variety.com/wp-content/uploads/2026/03/GMZ_KV-Announcement-3-9-26-e1773080181996.png');"></div>
+        <div class="weekly-card-text">CinemaCon welcomes Academy Award Winning Filmmaker Takashi Yamazaki to the Main Stage.</div>
+        <div class="weekly-card-stat">32,100 likes</div>
+      </div>
+      <div class="weekly-card">
+        <div class="weekly-card-platform"><span class="platform-dot dot-twitter"></span> X / Twitter</div>
+        <div class="weekly-card-image" style="background-image: url('https://variety.com/wp-content/uploads/2026/03/GMZ_KV-Announcement-3-9-26-e1773080181996.png');"></div>
+        <div class="weekly-card-text">CinemaCon welcomes Academy Award Winning Filmmaker Takashi Yamazaki to the Main Stage.</div>
+        <div class="weekly-card-stat">297,000 impressions</div>
+      </div>
+      <div class="weekly-card">
+        <div class="weekly-card-platform"><span class="platform-dot dot-email"></span> Top Email</div>
+        <div class="weekly-card-text">March 9 Member Newsletter</div>
+        <div class="weekly-card-stat">34.4% open rate</div>
+      </div>
+      <div class="weekly-card">
+        <div class="weekly-card-platform"><span class="platform-dot dot-web"></span> Website</div>
+        <div class="weekly-card-text">1,800 visitors &middot; 1,700 new</div>
+        <div class="weekly-card-stat" style="font-size:11px; color:var(--text-secondary);">Top: /cinemaunited.org</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ✏️ SOCIAL MEDIA SECTION
+       To add post images:
+       1. Screenshot the post
+       2. Save it in the same folder as this HTML file
+       3. Set background-image: url('your-filename.png')
+       ============================================================ -->
+  <div class="section" id="socialSection">
+    <div class="section-header">
+      <h2>Social <span class="accent-word">Media</span></h2>
+    </div>
+    <div class="social-grid">
+
+      <!-- ✏️ LINKEDIN -->
+      <div class="platform-card">
+        <div class="platform-card-header">
+          <div class="platform-name"><span class="platform-dot dot-linkedin"></span> LinkedIn</div>
+          <div class="stat-badge badge-up">&#9650; 4.2%</div>
+        </div>
+        <div class="platform-card-body">
+          <div class="stat-row">
+            <span class="stat-label">Total Followers</span>
+            <span class="stat-value">4,667</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">New Followers</span>
+            <span class="stat-value">+188 <span class="stat-badge badge-up">4.2%</span></span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Total Impressions</span>
+            <span class="stat-value">40.8K</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Engagement Rate</span>
+            <span class="stat-value">1.8%</span>
+          </div>
+          <!-- ✏️ TOP POST — set background-image URL for the screenshot -->
+          <div class="top-post">
+            <div class="top-post-inner">
+              <div class="top-post-image placeholder" style="background-image: url('https://www.linkedin.com/feed/update/urn:li:activity:7429901324869324800');"></div>
+              <div class="top-post-content">
+                <div class="top-post-label">&#9733; Top Post</div>
+                <div class="top-post-text"> Legend of Cinema Award</div>
+                <div class="top-post-meta">
+                  <span>4,218 imp</span>
+                  <span>186 eng</span>
+                  <span>3.2% CTR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ✏️ TOP 3 — set background-image on each .mini-post-thumb -->
+          <div class="top-posts-section">
+            <div class="top-posts-header">Top 3 Posts</div>
+            <div class="mini-post">
+              <span class="mini-post-rank">1</span>
+              <div class="mini-post-thumb" style="background-image: url('');"></div>
+              <span class="mini-post-text">Legend of Cinema Award</span>
+              <span class="mini-post-engagement">12,492 impressions</span>
+            </div>
+            <div class="mini-post">
+              <span class="mini-post-rank">2</span>
+              <div class="mini-post-thumb" style="background-image: url('');"></div>
+              <span class="mini-post-text">Variety Op-Ed</span>
+              <span class="mini-post-engagement">7,518 impressions</span>
+            </div>
+            <div class="mini-post">
+              <span class="mini-post-rank">3</span>
+              <div class="mini-post-thumb" style="background-image: url('');"></div>
+              <span class="mini-post-text">CinemaCon Film Showcase</span>
+              <span class="mini-post-engagement">6,041 impressions</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✏️ INSTAGRAM -->
+      <div class="platform-card">
+        <div class="platform-card-header">
+          <div class="platform-name"><span class="platform-dot dot-instagram"></span> Instagram</div>
+          <div class="stat-badge badge-up">&#9650; 2.8%</div>
+        </div>
+        <div class="platform-card-body">
+          <div class="stat-row">
+            <span class="stat-label">Total Followers</span>
+            <span class="stat-value">619</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">New Followers</span>
+            <span class="stat-value">+78 <span class="stat-badge badge-up">17.7%</span></span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Engagement Rate</span>
+            <span class="stat-value">6.1%</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Reach</span>
+            <span class="stat-value">18.5K</span>
+          </div>
+          <div class="top-post">
+            <div class="top-post-inner">
+              <div class="top-post-image placeholder" style="background-image: url('');"></div>
+              <div class="top-post-content">
+                <div class="top-post-label">&#9733; Top Post</div>
+                <div class="top-post-text">Beyond the Box Office: Scream 7 audience data shows 62% of opening weekend was under 30. The big screen isn't losing young audiences.</div>
+                <div class="top-post-meta">
+                  <span>6,421 reach</span>
+                  <span>312 likes</span>
+                  <span>4.8% eng</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="top-posts-section">
+            <div class="top-posts-header">Top 3 Posts</div>
+            <div class="mini-post">
+              <span class="mini-post-rank">1</span>
+              <div class="mini-post-thumb" style="background-image: url('');"></div>
+              <span class="mini-post-text">Beyond the Box Office: Scream 7 audience demographics</span>
+              <span class="mini-post-engagement">4.8%</span>
+            </div>
+            <div class="mini-post">
+              <span class="mini-post-rank">2</span>
+              <div class="mini-post-thumb" style="background-image: url('');"></div>
+              <span class="mini-post-text">GKIDS collab: Studio Ghibli Fest returns to theaters</span>
+              <span class="mini-post-engagement">4.2%</span>
+            </div>
+            <div class="mini-post">
+              <span class="mini-post-rank">3</span>
+              <div class="mini-post-thumb" style="background-image: url('');"></div>
+              <span class="mini-post-text">Member Spotlight: Alamo Drafthouse Cinema new location</span>
+              <span class="mini-post-engagement">3.7%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✏️ X / TWITTER -->
+      <div class="platform-card">
+        <div class="platform-card-header">
+          <div class="platform-name"><span class="platform-dot dot-twitter"></span> X / Twitter</div>
+          <div class="stat-badge badge-neutral">&#9654; 0.3%</div>
+        </div>
+        <div class="platform-card-body">
+          <div class="stat-row">
+            <span class="stat-label">Total Followers</span>
+            <span class="stat-value">2,464</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">New Followers</span>
+            <span class="stat-value">+8 <span class="stat-badge badge-neutral">0.3%</span></span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Engagement Rate</span>
+            <span class="stat-value">1.2%</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Impressions</span>
+            <span class="stat-value">11.8K</span>
+          </div>
+          <div class="top-post">
+            <div class="top-post-inner">
+              <div class="top-post-image placeholder" style="background-image: url('');"></div>
+              <div class="top-post-content">
+                <div class="top-post-label">&#9733; Top Post</div>
+                <div class="top-post-text">3 films crossed $20M this weekend. Theatrical exclusives outperformed day-and-date releases 4:1. The big screen wins when it gets a real window.</div>
+                <div class="top-post-meta">
+                  <span>2,104 imp</span>
+                  <span>87 eng</span>
+                  <span>4.1% eng</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="top-posts-section">
+            <div class="top-posts-header">Top 3 Posts</div>
+            <div class="mini-post">
+              <span class="mini-post-rank">1</span>
+              <div class="mini-post-thumb" style="background-image: url('');"></div>
+              <span class="mini-post-text">Weekend box office: theatrical exclusives outperform 4:1</span>
+              <span class="mini-post-engagement">4.1%</span>
+            </div>
+            <div class="mini-post">
+              <span class="mini-post-rank">2</span>
+              <div class="mini-post-thumb" style="background-image: url('');"></div>
+              <span class="mini-post-text">CinemaCon 2026: Early bird registration closes Friday</span>
+              <span class="mini-post-engagement">2.3%</span>
+            </div>
+            <div class="mini-post">
+              <span class="mini-post-rank">3</span>
+              <div class="mini-post-thumb" style="background-image: url('');"></div>
+              <span class="mini-post-text">Oscars remind us: the films that define culture are made for theaters</span>
+              <span class="mini-post-engagement">1.8%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ✏️ EMAIL & WEBSITE
+       ============================================================ -->
+  <div class="bottom-grid">
+
+    <!-- ✏️ EMAIL -->
+    <div class="card">
+      <div class="card-header">
+        <h3><span class="platform-dot dot-email" style="display:inline-block; margin-right:6px;"></span> Email Performance</h3>
+        <span style="font-family: var(--font-accent); font-style: italic; font-size:12px; color: var(--cinema-red);">HubSpot</span>
+      </div>
+      <div class="card-body">
+        <div class="email-stats-grid">
+          <div class="email-stat">
+            <div class="email-stat-value">38.2%</div>
+            <div class="email-stat-label">Avg Open Rate</div>
+          </div>
+          <div class="email-stat">
+            <div class="email-stat-value">4.7%</div>
+            <div class="email-stat-label">Avg CTR</div>
+          </div>
+          <div class="email-stat">
+            <div class="email-stat-value">12</div>
+            <div class="email-stat-label">Sends This Month</div>
+          </div>
+        </div>
+        <div class="top-posts-header">Top 3 Newsletters</div>
+        <ul class="newsletter-list">
+          <li class="newsletter-item">
+            <span class="newsletter-rank">1</span>
+            <div class="newsletter-info">
+              <div class="newsletter-subject">CinemaCon 2026 Early Registration Reminder</div>
+              <div class="newsletter-date">Feb 12, 2026</div>
+            </div>
+            <span class="newsletter-rate">44.1%</span>
+          </li>
+          <li class="newsletter-item">
+            <span class="newsletter-rank">2</span>
+            <div class="newsletter-info">
+              <div class="newsletter-subject">State of Theatrical: February Data Update</div>
+              <div class="newsletter-date">Feb 24, 2026</div>
+            </div>
+            <span class="newsletter-rate">41.8%</span>
+          </li>
+          <li class="newsletter-item">
+            <span class="newsletter-rank">3</span>
+            <div class="newsletter-info">
+              <div class="newsletter-subject">Oscars Preview: What Exhibition Should Watch For</div>
+              <div class="newsletter-date">Feb 28, 2026</div>
+            </div>
+            <span class="newsletter-rate">39.2%</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ✏️ WEBSITE -->
+    <div class="card">
+      <div class="card-header">
+        <h3><span class="platform-dot dot-web" style="display:inline-block; margin-right:6px;"></span> Website Analytics</h3>
+        <span style="font-family: var(--font-accent); font-style: italic; font-size:12px; color: var(--cinema-red);">GA4</span>
+      </div>
+      <div class="card-body">
+        <div class="website-hero-stats">
+          <div class="website-hero-stat">
+            <div class="stat-big">18.4K</div>
+            <div class="stat-small-label">Total Visitors</div>
+          </div>
+          <div class="website-hero-stat">
+            <div class="stat-big">7.2K</div>
+            <div class="stat-small-label">New Visitors</div>
+          </div>
+        </div>
+        <div class="top-pages-label">Top 3 Pages</div>
+        <div class="page-item">
+          <span class="page-rank">1</span>
+          <span class="page-url">/cinemacon-2026</span>
+          <span class="page-views">4,812</span>
+        </div>
+        <div class="page-item">
+          <span class="page-rank">2</span>
+          <span class="page-url">/membership</span>
+          <span class="page-views">2,347</span>
+        </div>
+        <div class="page-item">
+          <span class="page-rank">3</span>
+          <span class="page-url">/state-of-theatrical-report</span>
+          <span class="page-views">1,891</span>
+        </div>
+        <div style="margin-top:16px; padding-top:12px; border-top: 1px solid var(--border-subtle);">
+          <div class="top-pages-label" style="margin-bottom:6px;">Key Metrics</div>
+          <div class="stat-row">
+            <span class="stat-label">Avg Session Duration</span>
+            <span class="stat-value">2:34</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Bounce Rate</span>
+            <span class="stat-value">42.1%</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Pages / Session</span>
+            <span class="stat-value">2.8</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== CINEMACON COUNTDOWN ====== -->
+  <div class="countdown-strip">
+    <div class="countdown-info">
+      <div>
+        <div class="countdown-event">CinemaCon 2026</div>
+        <div class="countdown-dates">April 13–16 &middot; Caesars Palace, Las Vegas</div>
+      </div>
+    </div>
+    <div class="countdown-timer">
+      <div class="countdown-unit">
+        <div class="countdown-number" id="countDays">28</div>
+        <div class="countdown-label">Days</div>
+      </div>
+      <div class="countdown-unit">
+        <div class="countdown-number" id="countHours">14</div>
+        <div class="countdown-label">Hours</div>
+      </div>
+      <div class="countdown-unit">
+        <div class="countdown-number" id="countMins">32</div>
+        <div class="countdown-label">Minutes</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-footer">
+    <span class="footer-note">Cinema United &middot; Communications &amp; Marketing</span>
+    <span class="footer-note">Sample data — replace with live metrics</span>
+  </div>
+
+</div>
+
+<script>
+  function setView(view) {
+    const buttons = document.querySelectorAll('.view-toggle button');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    if (view === 'monthly') {
+      buttons[0].classList.add('active');
+      document.getElementById('weeklyStrip').style.display = 'none';
+      document.getElementById('periodLabel').textContent = 'February 2026';
+      document.querySelectorAll('.top-posts-section').forEach(el => el.style.display = 'block');
+    } else {
+      buttons[1].classList.add('active');
+      document.getElementById('weeklyStrip').style.display = 'block';
+      document.getElementById('periodLabel').textContent = 'Week of Mar 3–9, 2026';
+      document.querySelectorAll('.top-posts-section').forEach(el => el.style.display = 'none');
+    }
+  }
+
+  function updateCountdown() {
+    const target = new Date('2026-04-13T09:00:00-07:00');
+    const now = new Date();
+    const diff = target - now;
+    if (diff <= 0) {
+      document.getElementById('countDays').textContent = '0';
+      document.getElementById('countHours').textContent = '0';
+      document.getElementById('countMins').textContent = '0';
+      return;
+    }
+    document.getElementById('countDays').textContent = Math.floor(diff / (1000 * 60 * 60 * 24));
+    document.getElementById('countHours').textContent = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    document.getElementById('countMins').textContent = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 60000);
+
+  // Auto-remove placeholder styling when real images are present
+  document.querySelectorAll('.top-post-image').forEach(el => {
+    const bg = el.style.backgroundImage;
+    if (bg && bg !== "url('')" && bg !== 'url("")' && bg !== 'none') {
+      el.classList.remove('placeholder');
+    }
+  });
+</script>
+</body>
+</html>
